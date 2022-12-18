@@ -1,41 +1,21 @@
 <?php
    include "koneksi.php";
-   $page = 'index';
-   $no = 1;
-//    $data = mysqli_query($conn,"select * from tweet2");
-
-   if(isset($_POST['sentimen']))
-    {	
-    $id = $_POST['id'];
-    $halaman = $_POST['halaman'];
-    
-    
-    $sentiment=$_POST['sentimen'];
-    if($sentiment == 'Positif'){
-        $hasil = 1;
-    } else{
-        $hasil = 0;
-    }
-    // var_dump($sentiment);
-    
+   $jumlah_positif = mysqli_query($conn, "SELECT * from tweet2 where sentiment = 1");
+   $jumlah_negatif = mysqli_query($conn, "SELECT * from tweet2 where sentiment = 0");
+   $jumlah_netral = mysqli_query($conn, "SELECT * from tweet2 where sentiment = 2");
+   $row_positif = mysqli_num_rows($jumlah_positif);
+   $row_negatif = mysqli_num_rows($jumlah_negatif);
+   $row_netral = mysqli_num_rows($jumlah_netral);
+//    var_dump($row_positif);
+//    var_dump($row_negatif);
+//    var_dump($row_netral);
+//    die
+   
+    $output = passthru("python worldcloud_positif.py");
+    $output2 = passthru("python wordcloud_negatif.py");
+    $output3 = passthru("python sering.py");
         
-    // update user data
-    $result = mysqli_query($conn, "UPDATE tweet2 SET sentiment=$hasil WHERE id=$id");
     
-    // Redirect to homepage to display updated user in list
-    header("Location: index.php?halaman=" . $halaman);
-    }
-
-
-    if(isset($_POST['cari']))
-    {
-        // mysqli_query($conn, "DELETE FROM tweet2");
-        $name = $_POST['name'];
-        $halaman = $_POST['halaman'];
-        var_dump($name);
-        $output = passthru("python twitter2.py $name");
-        header("Location: index.php");
-    }
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +37,6 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -85,7 +64,6 @@
 
             <!-- Nav Item - Dashboard -->
             
-
             <li class="nav-item active">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
@@ -94,14 +72,19 @@
                 </a>
                 <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item active" href="index.php">Tarik Data</a>
+                        <a class="collapse-item" href="index.php">Tarik Data</a>
                         <a class="collapse-item" href="preprocessing.php">Preprocessing</a>
                         <a class="collapse-item" href="labeling.php">Labeling</a>
-                        <a class="collapse-item" href="analisa.php">Analisa</a>
+                        <a class="collapse-item active" href="analisa.php">Analisa</a>
                         <a class="collapse-item" href="evaluasi.php">Evaluasi</a>
                     </div>
                 </div>
             </li>
+
+            <!-- Divider -->
+            
+
+            
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
@@ -112,20 +95,13 @@
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="tarik_data_2.php">Tarik Data</a>
+                        <a class="collapse-item active" href="tarik_data_2.php">Tarik Data</a>
                         <a class="collapse-item" href="preprocessing2.php">Preprocessing</a>
                         <a class="collapse-item" href="labeling2.php">Labeling With Model</a>
                         <a class="collapse-item" href="analisa2.php">Analisa</a>
                     </div>
                 </div>
             </li>
-
-            <!-- Divider -->
-            
-
-            
-
-            
 
             <!-- Heading -->
             
@@ -198,17 +174,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     
-                    <form action="" method="POST" name="form1">
-                        <table width="25%" border="0">
-                            <tr> 
-                                <td>Hastag</td>
-                                <td><input type="text" name="name"></td>
-                            </tr>
-                                <td><input class="btn btn-primary mb-4" type="submit" name="cari" value="Tarik"></td>
-                            </tr>
-                        </table>
-                    </form>
-                    
+                   
                     <div class="row">
                     
                     
@@ -217,7 +183,7 @@
                             
                             <div class="card shadow mb-4">
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">Data Hasil Pencarian</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Analisa Data</h6>
                             </div>
                                 <!-- Card Header - Dropdown -->
                                 <div>
@@ -225,71 +191,83 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                <div class="table-responsive mt-3">
-                                        <table id="datatableSimple" class="table table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Username</th>
-                                                <th>Tweet</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                    
+                                <div class="row">
+                                    <div class="col-xl-4">
                                         
-                                            <?php
-                                                $batas = 20;
-                                                $halaman = isset($_GET['halaman'])?(int)$_GET['halaman'] : 1;
-                                                $halaman_awal = ($halaman>1) ? ($halaman * $batas) - $batas : 0;	
-                                
-                                                $previous = $halaman - 1;
-                                                $next = $halaman + 1;
-                                                
-                                                $data = mysqli_query($conn,"select * from tweet2");
-                                                $jumlah_data = mysqli_num_rows($data);
-                                                $total_halaman = ceil($jumlah_data / $batas);
-                                
-                                                $data = mysqli_query($conn,"select * from tweet2 limit $halaman_awal, $batas");
-                                                $nomor = $halaman_awal+1;
-                                                while($d = mysqli_fetch_array($data)){
-                                                    ?>
-                                                    
-                                                        
-                                                         
-                                                    <tr>
-                                                        
-                                                        <td><?php echo $nomor++; ?></td>
-                                                        <td><?php echo $d['user_screen_name'] ?></td>
-                                                        <td><?php echo $d['text'] ?></td>
-                                                        
-                                                       
-                                                        
-                                                    </tr>
-                                                    
-                                                    <?php
-                                                }
-                                            ?>
-                                            
-                                        </tbody>
-                                        </table>
-                                        
-                                        
+                                    
+                                    
+                                        <div class="card shadow mb-4">
+                                            <!-- Card Header - Dropdown -->
+                                            <div class="card-header py-3">
+                                                <h6 class="m-0 font-weight-bold text-primary">Perbandingan positif negatif netral</h6>
+                                            </div>
+                                            <!-- Card Body -->
+                                            <div class="card-body">
+                                                <div class="chart-pie pt-4">
+                                                    <canvas id="myPieChart"></canvas>
+                                                </div>
+                                                <p>Positif = <?php echo $row_positif?></p>
+                                                <p>Negatif = <?php echo $row_negatif?></p>
+                                                <p>Netral = <?php echo $row_netral?></p>
+                                            </div>
+                                        </div>  
                                     </div>
-                                    <nav>
-                                    <ul class="pagination justify-content-center">
-                                        <li class="page-item">
-                                            <a class="page-link" style="background-color: ;" <?php if($halaman > 1){ echo "href='?halaman=$previous'"; } ?>>Previous</a>
-                                        </li>
-                                        <?php 
-                                        for($x=1;$x<=$total_halaman;$x++){
-                                            ?> 
-                                            <li class="page-item"><a class="page-link" <?php if($x == $halaman){ echo 'style="background-color:#21274D"';}?>  href="?halaman=<?php echo $x ?>"><?php echo $x; ?></a></li>
-                                            <?php 
-                                        }
-                                        ?>				
-                                        <li class="page-item">
-                                            <a  class="page-link" <?php if($halaman < $total_halaman) { echo "href='?halaman=$next'"; } ?>>Next</a>
-                                        </li>
-                                    </ul>
+                                    <div class="col-xl-4">
+                                    <div class="card shadow mb-4">
+                                            <div class="card-header py-3">
+                                                <h6 class="m-0 font-weight-bold text-primary">Perbandingan Positif Negatif Netral</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="chart-bar">
+                                                    <canvas id="myBarChart"></canvas>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    </div>
+                                    <div class="col-xl-4">
+                                    <div class="card shadow mb-4">
+                                            <div class="card-header py-3">
+                                                <h6 class="m-0 font-weight-bold text-primary">Kata yang sering muncul</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <img src="sering.png" width="350" alt="">
+                                            </div>
+                                    </div>
+                                    </div>
+                                    
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                    <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                                <h6 class="m-0 font-weight-bold text-primary">WordCloud Positif</h6>
+                                            </div>
+                                        <div class="card-body">
+                                        <img src="wordcloud_positif.png" width="1150" height="500" alt="">
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                    <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                                <h6 class="m-0 font-weight-bold text-primary">WordCloud Negatif</h6>
+                                            </div>
+                                        <div class="card-body">
+                                        <img src="wordcloud_negatif.png" width="1150" height="500" alt="">
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+
+                                    
+                                <nav>
+                                    
                                 </nav>
                                 </div>
                                 <div>
@@ -365,9 +343,124 @@
 
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
-    
+    <!-- <script src="js/demo/chart-pie-demo.js"></script> -->
 
 </body>
 
 </html>
+
+<script>
+
+var ctx = document.getElementById("myPieChart");
+var myPieChart = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: ["Positif", "Negatif", "Netral"],
+    datasets: [{
+      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>, <?php echo $row_netral?>],
+      backgroundColor: ['#28C837', '#E21111' ,'#ACACAC'],
+      hoverBackgroundColor: ['#49FF00', '#FF0000', '#6E6E6E'],
+      hoverBorderColor: "rgba(234, 236, 244, 1)",
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10,
+    },
+    legend: {
+      display: false
+    },
+    cutoutPercentage: 80,
+  },
+});
+
+var ctx = document.getElementById("myBarChart");
+var myBarChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ["Positif", "Negatif", "Netral"],
+    datasets: [{
+      label: "Total",
+      backgroundColor: ["#38FF50","#FF3838", "#BDBDBD"],
+      hoverBackgroundColor: ["#00FF1F", "#FC0000", "#7D7D7D"],
+      borderColor: "#4e73df",
+      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>, <?php echo   $row_netral?>],
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        left: 10,
+        right: 25,
+        top: 25,
+        bottom: 0
+      }
+    },
+    scales: {
+      xAxes: [{
+        time: {
+          unit: 'month'
+        },
+        gridLines: {
+          display: false,
+          drawBorder: false
+        },
+        ticks: {
+          maxTicksLimit: 6
+        },
+        maxBarThickness: 25,
+      }],
+      yAxes: [{
+        ticks: {
+          min: 0,
+          max: 200,
+          maxTicksLimit: 10,
+          padding: 10,
+          // Include a dollar sign in the ticks
+        //   callback: function(value, index, values) {
+        //     return '$' + number_format(value);
+        //   }
+        },
+        gridLines: {
+          color: "rgb(234, 236, 244)",
+          zeroLineColor: "rgb(234, 236, 244)",
+          drawBorder: false,
+          borderDash: [2],
+          zeroLineBorderDash: [2]
+        }
+      }],
+    },
+    legend: {
+      display: false
+    },
+    tooltips: {
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: 14,
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10,
+      
+    },
+  }
+});
+
+
+
+
+
+</script>

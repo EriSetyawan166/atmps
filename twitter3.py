@@ -10,9 +10,7 @@ consumer_secret = 'rtYEB1iov2rmipIBUJ5kYLb7fwHGfQZabjlwkYvWJC1KwFEFw6'
 access_token = '2731103342-pbooVbgbCAwRQXVplrLhLOZqpMdOenScJkynUs6'
 access_secret = 'vD0biQhr5ATvC6kPOb86P8K6YWaM7cTdj9FoYqm1HksMc'
 tweetsPerQry = 10
-maxTweets = 10
-for arg in sys.argv:
-    print(arg)
+maxTweets = 200
 hashtag = sys.argv[1]
 
 mydb = mysql.connector.connect(
@@ -29,7 +27,6 @@ maxId = -1
 tweetCount = 0
 mycursor = mydb.cursor()
 newTweets = tweepy.Cursor(api.search_tweets, q=hashtag).items(maxTweets)
-
 newTweets = [x for x in newTweets]
 
 # while tweetCount < maxTweets:
@@ -50,7 +47,7 @@ for tweet in newTweets:
         user_screen_name,
         text
     ) 
-    query = "SELECT * FROM tweet2 WHERE text=%s"
+    query = "SELECT * FROM tweet3 WHERE text=%s"
     mycursor.execute(query, (text,))
 
     x = [i for i in mycursor]
@@ -71,11 +68,10 @@ for tweet in newTweets:
 
 
 sql = '''
-    INSERT INTO tweet2 (user_screen_name, text) 
+    INSERT INTO tweet3 (user_screen_name, text) 
     VALUES (%s,%s)
 '''
 mycursor.executemany(sql, val)
-
 mydb.commit()
 tweetCount += len(newTweets)	
 maxId = newTweets[-1].id

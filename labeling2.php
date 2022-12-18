@@ -1,41 +1,16 @@
 <?php
    include "koneksi.php";
-   $page = 'index';
    $no = 1;
 //    $data = mysqli_query($conn,"select * from tweet2");
 
-   if(isset($_POST['sentimen']))
-    {	
-    $id = $_POST['id'];
-    $halaman = $_POST['halaman'];
-    
-    
-    $sentiment=$_POST['sentimen'];
-    if($sentiment == 'Positif'){
-        $hasil = 1;
-    } else{
-        $hasil = 0;
-    }
-    // var_dump($sentiment);
-    
-        
-    // update user data
-    $result = mysqli_query($conn, "UPDATE tweet2 SET sentiment=$hasil WHERE id=$id");
-    
-    // Redirect to homepage to display updated user in list
-    header("Location: index.php?halaman=" . $halaman);
-    }
-
-
-    if(isset($_POST['cari']))
+    if(isset($_POST['proses']))
     {
-        // mysqli_query($conn, "DELETE FROM tweet2");
-        $name = $_POST['name'];
-        $halaman = $_POST['halaman'];
-        var_dump($name);
-        $output = passthru("python twitter2.py $name");
-        header("Location: index.php");
+        $output = passthru("python labeling.py");
+        header("Location: labeling2.php");
     }
+
+
+   
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +32,6 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -84,17 +58,15 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            
-
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fa-solid fa-gears"></i>
                     <span>Training</span>
                 </a>
-                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item active" href="index.php">Tarik Data</a>
+                        <a class="collapse-item" href="index.php">Tarik Data</a>
                         <a class="collapse-item" href="preprocessing.php">Preprocessing</a>
                         <a class="collapse-item" href="labeling.php">Labeling</a>
                         <a class="collapse-item" href="analisa.php">Analisa</a>
@@ -102,30 +74,26 @@
                     </div>
                 </div>
             </li>
+            <!-- Divider -->
+            
 
-            <li class="nav-item">
+            
+            <li class="nav-item active">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fa-solid fa-brain"></i>
                     <span>testing</span>
                 </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="tarik_data_2.php">Tarik Data</a>
                         <a class="collapse-item" href="preprocessing2.php">Preprocessing</a>
-                        <a class="collapse-item" href="labeling2.php">Labeling With Model</a>
+                        <a class="collapse-item active" href="labeling2.php">Labeling With Model</a>
                         <a class="collapse-item" href="analisa2.php">Analisa</a>
                     </div>
                 </div>
             </li>
-
-            <!-- Divider -->
-            
-
-            
-
-            
 
             <!-- Heading -->
             
@@ -198,16 +166,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     
-                    <form action="" method="POST" name="form1">
-                        <table width="25%" border="0">
-                            <tr> 
-                                <td>Hastag</td>
-                                <td><input type="text" name="name"></td>
-                            </tr>
-                                <td><input class="btn btn-primary mb-4" type="submit" name="cari" value="Tarik"></td>
-                            </tr>
-                        </table>
-                    </form>
+                    
                     
                     <div class="row">
                     
@@ -217,7 +176,7 @@
                             
                             <div class="card shadow mb-4">
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">Data Hasil Pencarian</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Labeling</h6>
                             </div>
                                 <!-- Card Header - Dropdown -->
                                 <div>
@@ -225,6 +184,9 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
+                                <form method="POST">
+                                    <input class="btn btn-primary mb-4" type="submit" name="proses" value="Proses">
+                                </form>
                                 <div class="table-responsive mt-3">
                                         <table id="datatableSimple" class="table table-bordered" >
                                         <thead>
@@ -232,6 +194,7 @@
                                                 <th>No</th>
                                                 <th>Username</th>
                                                 <th>Tweet</th>
+                                                <th>Sentimen</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -244,27 +207,49 @@
                                                 $previous = $halaman - 1;
                                                 $next = $halaman + 1;
                                                 
-                                                $data = mysqli_query($conn,"select * from tweet2");
+                                                $data = mysqli_query($conn,"select * from tweet3");
                                                 $jumlah_data = mysqli_num_rows($data);
                                                 $total_halaman = ceil($jumlah_data / $batas);
                                 
-                                                $data = mysqli_query($conn,"select * from tweet2 limit $halaman_awal, $batas");
+                                                $data = mysqli_query($conn,"select * from tweet3 limit $halaman_awal, $batas");
                                                 $nomor = $halaman_awal+1;
                                                 while($d = mysqli_fetch_array($data)){
                                                     ?>
                                                     
+                                                    <form name="update_sentimen" method="post" >
                                                         
-                                                         
+                                                        <input type="hidden" name="halaman" value="<?php echo $halaman ?>"> 
                                                     <tr>
                                                         
                                                         <td><?php echo $nomor++; ?></td>
                                                         <td><?php echo $d['user_screen_name'] ?></td>
                                                         <td><?php echo $d['text'] ?></td>
+                                                        <td align="center">
+                                                            <?php
+                                                                $hasil = $d['sentiment'];
+                                                                if($hasil == 2){
+                                                                   $hasil = "N/A";
+                                                                } else if ($hasil == 0){
+                                                                    $hasil = "Negatif";
+                                                                } else{
+                                                                    $hasil = "Positif";
+                                                                }
+
+                                                                echo $hasil;
+                                                            ?>
                                                         
+                                                        
+                                                        
+                                                        <!-- <button class="btn btn-primary" type="submit" name="sentimen" value="negatif">Test</button> -->
+
+                                                       
+                                                        
+                                                        
+                                                        </td
                                                        
                                                         
                                                     </tr>
-                                                    
+                                                    </form>
                                                     <?php
                                                 }
                                             ?>
@@ -366,7 +351,6 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
-    
 
 </body>
 

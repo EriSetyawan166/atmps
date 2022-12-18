@@ -4,37 +4,19 @@
    $no = 1;
 //    $data = mysqli_query($conn,"select * from tweet2");
 
-   if(isset($_POST['sentimen']))
-    {	
-    $id = $_POST['id'];
-    $halaman = $_POST['halaman'];
-    
-    
-    $sentiment=$_POST['sentimen'];
-    if($sentiment == 'Positif'){
-        $hasil = 1;
-    } else{
-        $hasil = 0;
-    }
-    // var_dump($sentiment);
-    
-        
-    // update user data
-    $result = mysqli_query($conn, "UPDATE tweet2 SET sentiment=$hasil WHERE id=$id");
-    
-    // Redirect to homepage to display updated user in list
-    header("Location: index.php?halaman=" . $halaman);
-    }
+  
 
 
     if(isset($_POST['cari']))
     {
         // mysqli_query($conn, "DELETE FROM tweet2");
+        // var_dump($_POST['name']);
+        // die;
         $name = $_POST['name'];
         $halaman = $_POST['halaman'];
         var_dump($name);
-        $output = passthru("python twitter2.py $name");
-        header("Location: index.php");
+        $output = passthru("python twitter3.py $name");
+        header("Location: tarik_data_2.php");
     }
 ?>
 
@@ -57,7 +39,6 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -86,15 +67,15 @@
             <!-- Nav Item - Dashboard -->
             
 
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fa-solid fa-gears"></i>
                     <span>Training</span>
                 </a>
-                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item active" href="index.php">Tarik Data</a>
+                        <a class="collapse-item" href="index.php">Tarik Data</a>
                         <a class="collapse-item" href="preprocessing.php">Preprocessing</a>
                         <a class="collapse-item" href="labeling.php">Labeling</a>
                         <a class="collapse-item" href="analisa.php">Analisa</a>
@@ -103,16 +84,16 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fa-solid fa-brain"></i>
                     <span>testing</span>
                 </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="tarik_data_2.php">Tarik Data</a>
+                        <a class="collapse-item active" href="tarik_data_2.php">Tarik Data</a>
                         <a class="collapse-item" href="preprocessing2.php">Preprocessing</a>
                         <a class="collapse-item" href="labeling2.php">Labeling With Model</a>
                         <a class="collapse-item" href="analisa2.php">Analisa</a>
@@ -244,11 +225,11 @@
                                                 $previous = $halaman - 1;
                                                 $next = $halaman + 1;
                                                 
-                                                $data = mysqli_query($conn,"select * from tweet2");
+                                                $data = mysqli_query($conn,"select * from tweet3");
                                                 $jumlah_data = mysqli_num_rows($data);
                                                 $total_halaman = ceil($jumlah_data / $batas);
                                 
-                                                $data = mysqli_query($conn,"select * from tweet2 limit $halaman_awal, $batas");
+                                                $data = mysqli_query($conn,"select * from tweet3 limit $halaman_awal, $batas");
                                                 $nomor = $halaman_awal+1;
                                                 while($d = mysqli_fetch_array($data)){
                                                     ?>
@@ -366,7 +347,6 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
-    
 
 </body>
 
