@@ -93,6 +93,35 @@
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link hapus-data" href="javascript:void(0)">
+                <i class="fa-solid fa-trash"></i>
+                    <span>Hapus Data</span>
+                </a>
+            </li>
+
+   
+
+            <div id="deleteModal" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Hapus Data</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menghapus data?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn nav-link" data-dismiss="modal">Tidak</button>
+                            <button type="button" class="btn nav-link" id="deleteData">Ya</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Heading -->
             
 
@@ -346,6 +375,43 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Get the modal
+            var modal = $("#deleteModal");
+
+            // Get the button that opens the modal
+            var btn = $(".nav-link.hapus-data");
+
+            // When the user clicks the button, open the modal 
+            btn.click(function() {
+                modal.modal("show");
+            });
+
+            // Get the "Ya" button in the modal
+            var deleteBtn = $("#deleteData");
+
+            // When the user clicks the "Ya" button, delete the data
+            deleteBtn.click(function() {
+            $.post("", {delete: true}, function(response) {
+                console.log("Data deleted successfully");
+                alert("Data Berhasil Dihapus");
+                location.reload();
+            });
+            modal.modal("hide");
+        });
+        });
+    </script>
+
+<?php
+    if (isset($_POST["delete"])) {
+        $sql = "DELETE FROM tweet2";
+        mysqli_query($conn, $sql);
+        
+    }
+?>
+
 
 </body>
 

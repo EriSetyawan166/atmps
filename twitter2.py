@@ -5,12 +5,12 @@ from datetime import datetime, timedelta, timezone
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 
-consumer_key = 'iY5MfEfoi5yhPmGxzLBw1qrj2'
-consumer_secret = 'rtYEB1iov2rmipIBUJ5kYLb7fwHGfQZabjlwkYvWJC1KwFEFw6'
-access_token = '2731103342-pbooVbgbCAwRQXVplrLhLOZqpMdOenScJkynUs6'
-access_secret = 'vD0biQhr5ATvC6kPOb86P8K6YWaM7cTdj9FoYqm1HksMc'
+consumer_key = 'SwdcgILvEZaWRyK0IMT2DdAxe'
+consumer_secret = '6waeB6lxCtJExj2wtTgjZT0WX5qOrv9DN1Vm6ET86BHRqc1rYA6'
+access_token = '802299183709372416-mDKPckyQg442t4tFhnZoVytmSmJKwjx'
+access_secret = 'CgVg6kco3ftvgJANoalsr1jGJA4KeYExqsuiPbIjxb7Vu'
 tweetsPerQry = 10
-maxTweets = 10
+maxTweets = 200
 for arg in sys.argv:
     print(arg)
 hashtag = sys.argv[1]

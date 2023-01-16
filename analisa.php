@@ -103,6 +103,35 @@
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link hapus-data" href="javascript:void(0)">
+                <i class="fa-solid fa-trash"></i>
+                    <span>Hapus Data</span>
+                </a>
+            </li>
+
+   
+
+            <div id="deleteModal" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Hapus Data</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menghapus data?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn nav-link" data-dismiss="modal">Tidak</button>
+                            <button type="button" class="btn nav-link" id="deleteData">Ya</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Heading -->
             
 
@@ -209,7 +238,6 @@
                                                 </div>
                                                 <p>Positif = <?php echo $row_positif?></p>
                                                 <p>Negatif = <?php echo $row_negatif?></p>
-                                                <p>Netral = <?php echo $row_netral?></p>
                                             </div>
                                         </div>  
                                     </div>
@@ -345,6 +373,43 @@
     <script src="js/demo/chart-area-demo.js"></script>
     <!-- <script src="js/demo/chart-pie-demo.js"></script> -->
 
+    <script>
+        $(document).ready(function() {
+            // Get the modal
+            var modal = $("#deleteModal");
+
+            // Get the button that opens the modal
+            var btn = $(".nav-link.hapus-data");
+
+            // When the user clicks the button, open the modal 
+            btn.click(function() {
+                modal.modal("show");
+            });
+
+            // Get the "Ya" button in the modal
+            var deleteBtn = $("#deleteData");
+
+            // When the user clicks the "Ya" button, delete the data
+            deleteBtn.click(function() {
+            $.post("", {delete: true}, function(response) {
+                console.log("Data deleted successfully");
+                alert("Data Berhasil Dihapus");
+                location.reload();
+            });
+            modal.modal("hide");
+        });
+        });
+    </script>
+
+<?php
+    if (isset($_POST["delete"])) {
+        $sql = "DELETE FROM tweet2";
+        mysqli_query($conn, $sql);
+        
+    }
+?>
+
+
 </body>
 
 </html>
@@ -357,9 +422,9 @@ var myPieChart = new Chart(ctx, {
   data: {
     labels: ["Positif", "Negatif", "Netral"],
     datasets: [{
-      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>, <?php echo $row_netral?>],
-      backgroundColor: ['#28C837', '#E21111' ,'#ACACAC'],
-      hoverBackgroundColor: ['#49FF00', '#FF0000', '#6E6E6E'],
+      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>],
+      backgroundColor: ['#28C837', '#E21111'],
+      hoverBackgroundColor: ['#49FF00', '#FF0000'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },
@@ -386,13 +451,13 @@ var ctx = document.getElementById("myBarChart");
 var myBarChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ["Positif", "Negatif", "Netral"],
+    labels: ["Positif", "Negatif"],
     datasets: [{
       label: "Total",
-      backgroundColor: ["#38FF50","#FF3838", "#BDBDBD"],
-      hoverBackgroundColor: ["#00FF1F", "#FC0000", "#7D7D7D"],
+      backgroundColor: ["#38FF50","#FF3838"],
+      hoverBackgroundColor: ["#00FF1F", "#FC0000"],
       borderColor: "#4e73df",
-      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>, <?php echo   $row_netral?>],
+      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>],
     }],
   },
   options: {

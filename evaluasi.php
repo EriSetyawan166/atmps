@@ -1,6 +1,17 @@
 <?php
+
+include 'koneksi.php';
 error_reporting(0);
 ini_set('display_errors', 0);
+
+$query = "SELECT COUNT(*) as total FROM tweet2 WHERE sentiment = 1";
+$result = mysqli_query($conn, $query);
+$sentiment1 = mysqli_fetch_assoc($result)['total'];
+
+$query = "SELECT COUNT(*) as total FROM tweet2 WHERE sentiment = 0";
+$result = mysqli_query($conn, $query);
+$sentiment0 = mysqli_fetch_assoc($result)['total'];
+$selisih = abs($sentiment1 - $sentiment0);
 ?>
 
 <!DOCTYPE html>
@@ -85,6 +96,34 @@ ini_set('display_errors', 0);
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link hapus-data" href="javascript:void(0)">
+                <i class="fa-solid fa-trash"></i>
+                    <span>Hapus Data</span>
+                </a>
+            </li>
+
+   
+
+            <div id="deleteModal" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Hapus Data</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menghapus data?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn nav-link" data-dismiss="modal">Tidak</button>
+                            <button type="button" class="btn nav-link" id="deleteData">Ya</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Heading -->
             
 
@@ -173,19 +212,46 @@ ini_set('display_errors', 0);
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                <form method="POST">
-                                    <input class="btn btn-primary mb-4" type="submit" name="evaluasi" value="train">
-                                </form>
+
+                                <div>
+                                    <?php if ($selisih > 25) {
+                                        echo "Terjadi ketidakseimbangan data, disarankan untuk melakukan oversampling atau undersampling";
+                                        echo "<br>";
+                                        echo "Data positif = ".$sentiment1;
+                                        echo "<br>";
+                                        echo "Data Negatif = ".$sentiment0;
+                                        echo "<br>";
+                                        echo "Selisih data = ".$selisih;
+                                        
+                                    }?>
+                                    <form method="POST">
+                                        <input class="btn btn-primary mb-4 mt-4" type="submit" name="evaluasi" value="train">
+                                        <?php if ($selisih > 25) { ?>
+                                            <input class="btn btn-primary mb-4 mt-4" type="submit" name="evaluasi_oversampling" value="Oversampling">
+                                            <input class="btn btn-primary mb-4 mt-4" type="submit" name="evaluasi_undersampling" value="Undersampling">
+                                        <?php } ?>
+                                    </form>
+                                </div>
+
+                                
                                 
                                     
-                                    
+                                
                                     
                                     <?php
                                     if(isset($_POST['evaluasi']))
                                     {
-                                        
-                                        // $kalimat = $_POST['kalimat'];
-                                        $test = exec("python training.py", $output);
+                                            $test = exec("python training.py", $output);
+                                    } 
+
+                                    if(isset($_POST['evaluasi_oversampling']))
+                                    {
+                                        $test = exec("python training_oversampling.py", $output);
+                                    }
+
+                                    if(isset($_POST['evaluasi_undersampling']))
+                                    {
+                                        $test = exec("python training_undersampling.py", $output);
                                     }
                                     ?>
                                     <p><?= $output[0] ?></p>
@@ -284,6 +350,43 @@ ini_set('display_errors', 0);
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <!-- <script src="js/demo/chart-pie-demo.js"></script> -->
+
+    <script>
+        $(document).ready(function() {
+            // Get the modal
+            var modal = $("#deleteModal");
+
+            // Get the button that opens the modal
+            var btn = $(".nav-link.hapus-data");
+
+            // When the user clicks the button, open the modal 
+            btn.click(function() {
+                modal.modal("show");
+            });
+
+            // Get the "Ya" button in the modal
+            var deleteBtn = $("#deleteData");
+
+            // When the user clicks the "Ya" button, delete the data
+            deleteBtn.click(function() {
+            $.post("", {delete: true}, function(response) {
+                console.log("Data deleted successfully");
+                alert("Data Berhasil Dihapus");
+                location.reload();
+            });
+            modal.modal("hide");
+        });
+        });
+    </script>
+
+<?php
+    if (isset($_POST["delete"])) {
+        $sql = "DELETE FROM tweet2";
+        mysqli_query($conn, $sql);
+        
+    }
+?>
+
 
 </body>
 
