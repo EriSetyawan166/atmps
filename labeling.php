@@ -324,22 +324,26 @@
                                         
                                     </div>
                                     <nav>
-                                    <ul class="pagination justify-content-center">
-                                        <li class="page-item">
-                                            <a class="page-link" style="background-color: ;" <?php if($halaman > 1){ echo "href='?halaman=$previous'"; } ?>>Previous</a>
-                                        </li>
-                                        <?php 
-                                        for($x=1;$x<=$total_halaman;$x++){
-                                            ?> 
-                                            <li class="page-item"><a class="page-link" <?php if($x == $halaman){ echo 'style="background-color:#21274D"';}?>  href="?halaman=<?php echo $x ?>"><?php echo $x; ?></a></li>
+                                        <ul class="pagination justify-content-center">
+                                            <li class="page-item">
+                                                <a class="page-link" style="background-color: ;" <?php if($halaman > 1){ echo "href='?halaman=$previous'"; } ?>>Previous</a>
+                                            </li>
                                             <?php 
-                                        }
-                                        ?>				
-                                        <li class="page-item">
-                                            <a  class="page-link" <?php if($halaman < $total_halaman) { echo "href='?halaman=$next'"; } ?>>Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                            for($x=1;$x<=$total_halaman;$x++){
+                                                ?> 
+                                                <li class="page-item"><a class="page-link" <?php if($x == $halaman){ echo 'style="background-color:#21274D"';}?>  href="?halaman=<?php echo $x ?>"><?php echo $x; ?></a></li>
+                                                <?php 
+                                                if($x % 24 == 0){
+                                                    echo '</ul><ul class="pagination justify-content-center">';
+                                                }
+                                            }
+                                            ?>				
+                                            <li class="page-item">
+                                                <a  class="page-link" <?php if($halaman < $total_halaman) { echo "href='?halaman=$next'"; } ?>>Next</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+
                                 </div>
                                 <div>
                                     

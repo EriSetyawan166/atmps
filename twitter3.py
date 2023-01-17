@@ -5,10 +5,10 @@ from datetime import datetime, timedelta, timezone
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 
-consumer_key = 'SwdcgILvEZaWRyK0IMT2DdAxe'
-consumer_secret = '6waeB6lxCtJExj2wtTgjZT0WX5qOrv9DN1Vm6ET86BHRqc1rYA6'
-access_token = '802299183709372416-mDKPckyQg442t4tFhnZoVytmSmJKwjx'
-access_secret = 'CgVg6kco3ftvgJANoalsr1jGJA4KeYExqsuiPbIjxb7Vu'
+consumer_key = 'prtMkWR1urcFryQlZiHirvZsz'
+consumer_secret = 'SsZQUhxfpww5dvmezkK8tYaVJk4k8uafXF5kXg03zhlCqd8cJq'
+access_token = '1203340032330715136-ykATveLYSYYGzGAah3kLCxygdz4y4T'
+access_secret = 'c4Sc68bEAbZR7q2JGlcaJJRA6HDgFSn4l3Rym49grl3b8'
 tweetsPerQry = 10
 maxTweets = 200
 hashtag = sys.argv[1]
@@ -26,7 +26,7 @@ api = tweepy.API(authentication, wait_on_rate_limit=True)#, wait_on_rate_limit_n
 maxId = -1
 tweetCount = 0
 mycursor = mydb.cursor()
-newTweets = tweepy.Cursor(api.search_tweets, q=hashtag).items(maxTweets)
+newTweets = tweepy.Cursor(api.search_tweets, q=hashtag, tweet_mode="extended").items(maxTweets)
 newTweets = [x for x in newTweets]
 
 # while tweetCount < maxTweets:
@@ -41,7 +41,10 @@ newTweets = [x for x in newTweets]
 total = 0
 val = []
 for tweet in newTweets:
-    text = tweet.text
+    if 'retweeted_status' in dir(tweet):
+        text = tweet.retweeted_status.full_text
+    else:
+        text = tweet.full_text
     user_screen_name = tweet.user.screen_name
     tweet_tuple = (
         user_screen_name,

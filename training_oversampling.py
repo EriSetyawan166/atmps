@@ -32,14 +32,6 @@ for tweet in myresult:
 dict = {'text': text, 'sentiment':sentiment}
 df = pd.DataFrame(dict)
 
-sentimen_1 = df[df['sentiment'] == 1]
-jumlah_sentimen_1 = len(sentimen_1)
-print("Jumlah data dengan sentimen 1: ", jumlah_sentimen_1)
-
-sentimen_0 = df[df['sentiment'] == 0]
-jumlah_sentimen_0 = len(sentimen_0)
-print("Jumlah data dengan sentimen 0: ", jumlah_sentimen_0)
-
 
 #mengubah teks string menjadi bentuk binary
 cv = CountVectorizer()
@@ -70,11 +62,11 @@ print("F-measure = " + str(f_measure))
 
 
 
-# jumlah data sebelum oversampling
-print("Jumlah data sebelum oversampling: ", Counter(y_train))
+# # jumlah data sebelum oversampling
+# print("Jumlah data sebelum oversampling: ", Counter(y_train))
 
-# jumlah data sesudah oversampling
-print("Jumlah data sesudah oversampling: ", Counter(y_train_resampled))
+# # jumlah data sesudah oversampling
+# print("Jumlah data sesudah oversampling: ", Counter(y_train_resampled))
 
 #menyimpan model
 filename = 'model.ict'

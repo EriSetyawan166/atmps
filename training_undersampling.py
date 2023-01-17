@@ -34,22 +34,13 @@ for tweet in myresult:
 dict = {'text': text, 'sentiment':sentiment}
 df = pd.DataFrame(dict)
 
-sentimen_1 = df[df['sentiment'] == 1]
-jumlah_sentimen_1 = len(sentimen_1)
-print("Jumlah data dengan sentimen 1: ", jumlah_sentimen_1)
-
-sentimen_0 = df[df['sentiment'] == 0]
-jumlah_sentimen_0 = len(sentimen_0)
-print("Jumlah data dengan sentimen 0: ", jumlah_sentimen_0)
-
-
 #mengubah teks string menjadi bentuk binary
 cv = CountVectorizer()
 text_counts = cv.fit_transform(df['text'])
 
 #split data training dan testing
 x_train, x_test, y_train, y_test= train_test_split(text_counts, df['sentiment'], test_size=0.25, random_state=5)
-rus = RandomUnderSampler()
+rus = RandomUnderSampler(random_state=42)
 x_train_resampled, y_train_resampled = rus.fit_resample(x_train, y_train)
 
 #modeling atau training data
@@ -72,11 +63,11 @@ print("F-measure = " + str(f_measure))
 
 
 
-# jumlah data sebelum oversampling
-print("Jumlah data sebelum oversampling: ", Counter(y_train))
+# # jumlah data sebelum undersampling
+# print("Jumlah data sebelum undersampling: ", Counter(y_train))
 
-# jumlah data sesudah oversampling
-print("Jumlah data sesudah oversampling: ", Counter(y_train_resampled))
+# # jumlah data sesudah undersampling
+# print("Jumlah data sesudah undersampling: ", Counter(y_train_resampled))
 
 #menyimpan model
 filename = 'model.ict'

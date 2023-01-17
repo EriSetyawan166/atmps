@@ -14,7 +14,7 @@ mydb = mysql.connector.connect(
 
 temp = []
 mycursor = mydb.cursor()
-mycursor.execute("SELECT * FROM tweet2")
+mycursor.execute("SELECT * FROM tweet2 WHERE text_bersih = ''")
 myresult = mycursor.fetchall()
 
 mycursor1 = mydb.cursor()
