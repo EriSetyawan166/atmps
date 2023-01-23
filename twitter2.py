@@ -4,13 +4,10 @@ import mysql.connector
 from datetime import datetime, timedelta, timezone
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
+from api_key import consumer_key, consumer_secret, access_token, access_secret
 
-consumer_key = 'prtMkWR1urcFryQlZiHirvZsz'
-consumer_secret = 'SsZQUhxfpww5dvmezkK8tYaVJk4k8uafXF5kXg03zhlCqd8cJq'
-access_token = '1203340032330715136-ykATveLYSYYGzGAah3kLCxygdz4y4T'
-access_secret = 'c4Sc68bEAbZR7q2JGlcaJJRA6HDgFSn4l3Rym49grl3b8'
 tweetsPerQry = 10
-maxTweets = 200
+maxTweets = 1
 for arg in sys.argv:
     print(arg)
 hashtag = sys.argv[1]

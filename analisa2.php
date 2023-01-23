@@ -229,7 +229,7 @@
                                         <div class="card shadow mb-4">
                                             <!-- Card Header - Dropdown -->
                                             <div class="card-header py-3">
-                                                <h6 class="m-0 font-weight-bold text-primary">Perbandingan positif negatif netral</h6>
+                                                <h6 class="m-0 font-weight-bold text-primary">Perbandingan positif negatif</h6>
                                             </div>
                                             <!-- Card Body -->
                                             <div class="card-body">
@@ -238,7 +238,6 @@
                                                 </div>
                                                 <p>Positif = <?php echo $row_positif?></p>
                                                 <p>Negatif = <?php echo $row_negatif?></p>
-                                                <p>Netral = <?php echo $row_netral?></p>
                                             </div>
                                         </div>  
                                     </div>
@@ -422,9 +421,9 @@ var myPieChart = new Chart(ctx, {
   data: {
     labels: ["Positif", "Negatif", "Netral"],
     datasets: [{
-      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>, <?php echo $row_netral?>],
-      backgroundColor: ['#28C837', '#E21111' ,'#ACACAC'],
-      hoverBackgroundColor: ['#49FF00', '#FF0000', '#6E6E6E'],
+      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>],
+      backgroundColor: ['#28C837', '#E21111'],
+      hoverBackgroundColor: ['#49FF00', '#FF0000'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },
@@ -451,13 +450,13 @@ var ctx = document.getElementById("myBarChart");
 var myBarChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ["Positif", "Negatif", "Netral"],
+    labels: ["Positif", "Negatif"],
     datasets: [{
       label: "Total",
-      backgroundColor: ["#38FF50","#FF3838", "#BDBDBD"],
-      hoverBackgroundColor: ["#00FF1F", "#FC0000", "#7D7D7D"],
+      backgroundColor: ["#38FF50","#FF3838"],
+      hoverBackgroundColor: ["#00FF1F", "#FC0000"],
       borderColor: "#4e73df",
-      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>, <?php echo   $row_netral?>],
+      data: [<?php echo $row_positif?>, <?php echo $row_negatif?>],
     }],
   },
   options: {
